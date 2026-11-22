@@ -5,6 +5,7 @@
 | 1   | Claude Code (Claude Opus 5.5) | Izveidot projektam MI darba žurnālu pēc parauga | Izveidots fails DARBA_ZURNALS.md ar žurnāla tabulu (6 kolonnas, 3 rindas) | Pirmā versija | 3910475 |
 | 2   | Claude Code (Claude Opus 5.5) | Izveidot uzdevumu saraksta lietotni "Mani uzdevumi" (HTML, CSS, JS) pēc detalizētas uzvednes | Izveidoti faili index.html, style.css, app.js ar visām 6 funkcijām | | a0227db |
 | 3   | Claude Code (Claude Opus 5.5) | Pievienot darba žurnālam pārbaudes (T2) un kļūdu (T3) tabulas pēc parauga | Pievienota T2 tabula ar 10 pārbaudēm un tukša T3 tabula | Aizpildīju T2 faktiskos rezultātus (visas 10 pārbaudes izdevās) | c8a3ac5 |
+| 4   | Claude Code (Claude Opus 5.5) | Papildfunkcija A - rediģēšana | strādā | pārbaudīju ar git diff | d2c4331 |
 
 # T2. Pārbaudes tabula
 
