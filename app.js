@@ -13,6 +13,7 @@ const filterButtons = document.querySelectorAll('[data-filter]');
 // Lietotnes stāvoklis
 let tasks = loadTasks();
 let currentFilter = 'all';
+let editingId = null; // Pašlaik rediģējamā uzdevuma id vai null
 
 // Nolasa uzdevumus no localStorage; bojātu datu gadījumā atgriež tukšu masīvu
 function loadTasks() {
@@ -97,9 +98,7 @@ function createTaskElement(task) {
   checkbox.checked = task.done;
   checkbox.setAttribute('aria-label', 'Atzīmēt kā izpildītu');
 
-  const span = document.createElement('span');
-  span.className = 'task-text';
-  span.textContent = task.text;
+  const span = createTextElement(task.text);
 
   const delBtn = document.createElement('button');
   delBtn.type = 'button';
@@ -141,8 +140,87 @@ function getTaskId(element) {
   return li ? Number(li.dataset.id) : null;
 }
 
+// Izveido uzdevuma teksta elementu (dubultklikšķis uz tā sāk rediģēšanu)
+function createTextElement(text) {
+  const span = document.createElement('span');
+  span.className = 'task-text';
+  span.textContent = text;
+  span.title = 'Dubultklikšķis, lai rediģētu';
+  return span;
+}
+
+// Aizstāj uzdevuma tekstu ar ievades lauku rediģēšanai
+function startEdit(span) {
+  const id = getTaskId(span);
+  const task = tasks.find((t) => t.id === id);
+  if (!task || editingId !== null) {
+    return;
+  }
+  editingId = id;
+
+  const field = document.createElement('input');
+  field.type = 'text';
+  field.className = 'edit-input';
+  field.value = task.text;
+  field.setAttribute('aria-label', 'Rediģēt uzdevumu');
+
+  span.replaceWith(field);
+  field.focus();
+  field.select();
+}
+
+// Pabeidz rediģēšanu: save=true saglabā, save=false atceļ izmaiņas
+function finishEdit(field, save) {
+  if (editingId === null) {
+    return;
+  }
+  const task = tasks.find((t) => t.id === editingId);
+  editingId = null;
+  if (!task) {
+    return;
+  }
+  const text = field.value.trim();
+  // Tukšu tekstu nesaglabā: tad paliek iepriekšējais teksts
+  if (save && text !== '' && text !== task.text) {
+    task.text = text;
+    saveTasks();
+  }
+  field.replaceWith(createTextElement(task.text));
+}
+
+// Apstrādā taustiņus rediģēšanas laukā: Enter saglabā, Esc atceļ
+function handleEditKey(event) {
+  if (event.isComposing) {
+    return;
+  }
+  if (event.key === 'Enter') {
+    finishEdit(event.target, true);
+  } else if (event.key === 'Escape') {
+    finishEdit(event.target, false);
+  }
+}
+
 // Notikumu apstrāde
 addBtn.addEventListener('click', addTask);
+
+list.addEventListener('dblclick', (event) => {
+  if (event.target.classList.contains('task-text')) {
+    startEdit(event.target);
+  }
+});
+
+list.addEventListener('keydown', (event) => {
+  if (event.target.classList.contains('edit-input')) {
+    handleEditKey(event);
+  }
+});
+
+// Ja fokuss pamet rediģēšanas lauku, izmaiņas tiek saglabātas
+list.addEventListener('focusout', (event) => {
+  if (event.target.classList.contains('edit-input')) {
+    finishEdit(event.target, true);
+  }
+});
 
 input.addEventListener('keydown', (event) => {
   if (event.key === 'Enter' && !event.isComposing) {

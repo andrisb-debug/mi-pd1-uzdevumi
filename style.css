@@ -121,6 +121,21 @@ button {
   color: #9aa5b1;
 }
 
+.task-text {
+  cursor: text;
+}
+
+/* Rediģēšanas lauks uzdevuma teksta vietā */
+.edit-input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 8px;
+  font: inherit;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  outline: none;
+}
+
 .delete-btn {
   padding: 4px 10px;
   color: #b91c1c;
